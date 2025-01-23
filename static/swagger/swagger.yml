@@ -1,0 +1,690 @@
+openapi: 3.0.0
+info:
+  title: Mazeem API
+  description: The Mazeem API facilitates sending, managing, and verifying event invitations via WhatsApp.
+  version: 1.0.0
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/login:
+    post:
+      summary: Authenticate user and generate an access token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+                  description: User email or phone number
+                password:
+                  type: string
+                  description: User password
+              required:
+                - identifier
+                - password
+      responses:
+        "200":
+          description: Successful login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      name:
+                        type: string
+                      image:
+                        type: string
+                      login_by:
+                        type: string
+                      plan:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+  /auth/google-login:
+    post:
+      summary: Login or register using Google
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  description: Google user email
+                user_id:
+                  type: string
+                  description: Google user ID
+                name:
+                  type: string
+                  description: Google user full name
+              required:
+                - email
+                - user_id
+                - name
+      responses:
+        "200":
+          description: Successful Google login
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      name:
+                        type: string
+                      image:
+                        type: string
+                      login_by:
+                        type: string
+                      plan:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                      remaining_message:
+                        type: integer
+                      send_message:
+                        type: integer
+        "400":
+          description: Missing data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /auth/register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+                phone:
+                  type: string
+                name:
+                  type: string
+              required:
+                - email
+                - password
+                - phone
+                - name
+      responses:
+        "200":
+          description: Successful registration
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  access_token:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      name:
+                        type: string
+                      image:
+                        type: string
+                      login_by:
+                        type: string
+                      plan:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+
+  /auth/forgot-password:
+    post:
+      summary: Send the user's password to their registered phone
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                identifier:
+                  type: string
+              required:
+                - identifier
+      responses:
+        "200":
+          description: Password sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /auth/profile:
+    get:
+      summary: Retrieve the authenticated user's profile
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Profile data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      email:
+                        type: string
+                      phone:
+                        type: string
+                      name:
+                        type: string
+                      image:
+                        type: string
+                      login_by:
+                        type: string
+                      plan:
+                        type: string
+                      created_at:
+                        type: string
+                        format: date-time
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        location:
+                          type: string
+                        image:
+                          type: string
+                        date:
+                          type: string
+                          format: date
+                        created_at:
+                          type: string
+                          format: date-time
+
+    post:
+      summary: Update the authenticated user's profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                phone:
+                  type: string
+                name:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Profile updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/create-event:
+    post:
+      summary: Create a new event
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+                date:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+                phone_numbers:
+                  type: string
+      responses:
+        "200":
+          description: Event created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/edit-event/{event_id}:
+    post:
+      summary: Edit an existing event
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                location:
+                  type: string
+                image:
+                  type: string
+                  format: binary
+      responses:
+        "200":
+          description: Event updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/delete-event/{event_id}:
+    delete:
+      summary: Delete an event
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/list-events:
+    get:
+      summary: Retrieve a list of events for the authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of events
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  events:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        title:
+                          type: string
+                        description:
+                          type: string
+                        location:
+                          type: string
+                        image:
+                          type: string
+                        date:
+                          type: string
+                          format: date
+                        created_at:
+                          type: string
+                          format: date-time
+                        invitations:
+                          type: integer
+                        accepted:
+                          type: integer
+                        rejected:
+                          type: integer
+
+  /api/event/{event_id}:
+    get:
+      summary: Retrieve details of a specific event
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: event_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Event details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  event:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                      title:
+                        type: string
+                      description:
+                        type: string
+                      location:
+                        type: string
+                      image:
+                        type: string
+                      date:
+                        type: string
+                        format: date
+                      created_at:
+                        type: string
+                        format: date-time
+
+  /api/send-all-invitations:
+    post:
+      summary: Send invitations for a specific event to multiple phone numbers
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                event:
+                  type: integer
+                phone_numbers:
+                  type: array
+                  items:
+                    type: string
+              required:
+                - event
+                - phone_numbers
+      responses:
+        "200":
+          description: Invitations sent
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/validate-qr-code:
+    post:
+      summary: Validate a QR code for an invitation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                qrcode:
+                  type: string
+              required:
+                - qrcode
+      responses:
+        "200":
+          description: QR Code validated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+                  valid:
+                    type: boolean
+
+  /api/subscribe:
+    post:
+      summary: Subscribe the authenticated user to a plan
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plan:
+                  type: string
+                  description: The plan ID to subscribe to
+              required:
+                - plan
+      responses:
+        "201":
+          description: Subscription successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+        "400":
+          description: Missing or invalid plan
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string
+
+  /api/plans:
+    get:
+      summary: Retrieve all available subscription plans
+      responses:
+        "200":
+          description: List of plans
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  plans:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        name:
+                          type: string
+                        message_count:
+                          type: integer
+                        price:
+                          type: number
+                          format: float
+                        created_at:
+                          type: string
+                          format: date-time
+
+  /api/subscriptions:
+    get:
+      summary: Retrieve the user's subscriptions
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: List of subscriptions
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  subscriptions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        message_count:
+                          type: integer
+                        price:
+                          type: number
+                          format: float
+                        plan:
+                          type: string
+                        created_at:
+                          type: string
+                          format: date-time
+
+  /api/delete-account:
+    delete:
+      summary: Delete the authenticated user's account
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Account deleted
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                  message:
+                    type: string

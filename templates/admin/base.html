@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Mazeem Dashboard</title>
+
+      <!-- Font Awesome for Icons -->
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+      <!-- Google Fonts: Rubik for Consistency -->
+      <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300..900&display=swap" rel="stylesheet">
+
+      <!-- Tailwind CSS for Styling -->
+      <script src="https://cdn.tailwindcss.com"></script>
+
+      <!-- Alpine.js for Interactivity -->
+      <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.5.2/dist/cdn.min.js" defer></script>
+
+      <!-- Custom Styles -->
+      <link rel="stylesheet" href="/static/style.css">
+
+      <style>
+            /* General Body Styling */
+
+            body {
+                  font-family: 'Rubik', sans-serif;
+                  margin: 0;
+                  padding: 0;
+                  box-sizing: border-box;
+                  background-color: #f9f9f9;
+                  color: #333;
+            }
+
+            /* Form Element Styling */
+
+            input,
+            select,
+            textarea {
+                  border: 1px solid #ccc;
+                  padding: 0.5rem;
+                  border-radius: 4px;
+                  transition: border-color 0.3s ease;
+            }
+
+            input:focus,
+            select:focus,
+            textarea:focus {
+                  border-color: #007bff;
+                  outline: none;
+            }
+
+            /* Typography for Consistency */
+
+            p,
+            h1,
+            h2,
+            h3,
+            h4,
+            h5,
+            h6,
+            a,
+            span,
+            label,
+            input,
+            select,
+            textarea,
+            button,
+            i {
+                  font-family: "Rubik", sans-serif;
+                  font-style: normal;
+            }
+
+            /* Button Styling */
+
+            button {
+                  background-color: #9900ff;
+                  color: white;
+                  padding: 0.75rem 1.5rem;
+                  border: none;
+                  border-radius: 4px;
+                  cursor: pointer;
+                  transition: background-color 0.3s ease;
+            }
+
+            button:hover {
+                  background-color: #8f00b3;
+            }
+      </style>
+</head>
+
+<body class=" bg-gray-100  h-[100vh]">
+      <div class="flex flex-col w-full h-full relative ">
+            <div class="nav-bar bg-white h-16 w-full  px-8 flex justify-between items-center z-20">
+                  <div class="w-[300px] main-logo lg:flex gap-2 hidden ">
+                        <h1 class="text-2xl not-italic font-semibold  text-darckBlue">Mazeem</h1>
+                        <div class="w-12 h-12"><img src="/static/logo.png" alt=""></div>
+                  </div>
+                  <div class="flex  gap-2 lg:flex-grow items-center">
+                        <img src="https://ui-avatars.com/api/?name={{ session['email'] }}&size=128"
+                              class="w-10 h-10 rounded-full border border-gray-300" alt="صورة المسؤول" />
+                        <span class=" font-semibold ml-2 text-gray-700">{{ session['email'] }}</span>
+                  </div>
+
+            </div>
+
+            <div class="flex  w-full overflow-x-hidden     med-outlet">
+                  <div class="hidden w-[300px] lg:flex sticky top-0 right-0">
+                        <div class=" flex flex-col justify-between bg-lightGray h-full lg:w-full calc-height ">
+                              <div class=" flex flex-col ">
+
+                                    <a class=" flex gap-7 py-3 items-center px-6 hover:bg-gray cursor-pointer"
+                                          href="/api/dashboard">
+                                          <i class="fas fa-home text-2xl text-darkGray"></i>
+                                          <h2 class="text-xl font-medium text-darkGray">الرئيسية</h2>
+                                    </a>
+                                    <!-- /admin/users -->
+                                    <a class=" flex gap-7 py-3 items-center px-6 hover:bg-gray cursor-pointer"
+                                          href="/admin/users">
+                                          <i class="fas fa-user text-2xl text-darkGray"></i>
+                                          <h2 class="text-xl font-medium text-darkGray">المستخدمين</h2>
+                                    </a>
+                                    <!-- events -->
+                                    <a class=" flex gap-7 py-3 items-center px-6 hover:bg-gray cursor-pointer"
+                                          href="/admin/events">
+                                          <i class="fas fa-calendar-alt text-2xl text-darkGray"></i>
+                                          <h2 class="text-xl font-medium text-darkGray">الفعاليات</h2>
+                                    </a>
+                                    <!-- sitteng -->
+                                    <a class=" flex gap-7 py-3 items-center px-6 hover:bg-gray cursor-pointer"
+                                          href="/admin/settings">
+                                          <i class="fas fa-cog text-2xl text-darkGray"></i>
+                                          <h2 class="text-xl font-medium text-darkGray">الإعدادات</h2>
+                                    </a>
+
+                                    <div class="flex flex-col pb-4 ">
+                                          <div onclick="window.location.href = '/logout';"
+                                                class=" flex items-center py-3 px-6 gap-7 hover:bg-gray cursor-pointer border-t-2 border-gray  ">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                                                      viewBox="0 0 32 32" fill="none">
+                                                      <path d="M16.0006 20L20.0006 16M20.0006 16L16.0006 12M20.0006 16H5.33398M5.33398 9.66399V9.59999C5.33398 8.10666 5.33398 7.35999 5.62465 6.78933C5.88065 6.28666 6.28732 5.87999 6.78998 5.62399C7.36065 5.33333 8.10732 5.33333 9.60065 5.33333H22.4006C23.894 5.33333 24.6406 5.33333 25.21 5.62399C25.7126 5.87999 26.1206 6.28666 26.3766 6.78933C26.6673 7.35866 26.6673 8.10533 26.6673 9.59599V22.4053C26.6673 23.896 26.6673 24.6413 26.3766 25.2107C26.1205 25.7125 25.7121 26.1204 25.21 26.376C24.6406 26.6667 23.8953 26.6667 22.4046 26.6667H9.59665C8.10598 26.6667 7.35932 26.6667 6.78998 26.376C6.28824 26.1203 5.88031 25.7124 5.62465 25.2107C5.33398 24.64 5.33398 23.8933 5.33398 22.4V22.3333"
+                                                            stroke="#58647C" stroke-width="2" stroke-linecap="round"
+                                                            stroke-linejoin="round"></path>
+                                                </svg>
+                                                <h1 class="text-xl font-medium text-darkGray">خروج</h1>
+                                          </div>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+
+                  <div class="contant w-full h-full bg-gray-100 m-3">
+                        {% block content %}{% endblock %}
+                  </div>
+                  <div class="md:hidden fixed bottom-0 right-0 w-full bg-white mobile-menu">
+                        <div class="flex justify-between items-center   ">
+
+
+                              <a aria-current="page"
+                                    class="flex flex-col cursor-pointer justify-center items-center w-1/5 py-3 px-3 active"
+                                    href="/admin/dashboard">
+
+                                    <i class="fas fa-home text-2xl text-darkGray"></i>
+                                    <p class="font-medium text-[10px] text-center">الرئيسية</p>
+                              </a>
+                              <a aria-current="page"
+                                    class="flex flex-col cursor-pointer justify-center items-center w-1/5 py-3 px-3"
+                                    href="/admin/users">
+
+                                    <i class="fas fa-user text-2xl text-darkGray"></i>
+                                    <p class="font-medium text-[10px] text-center">المستخدمين</p>
+                              </a>
+                              <a aria-current="page"
+                                    class="flex flex-col cursor-pointer justify-center items-center w-1/5 py-3 px-3"
+                                    href="/admin/events">
+
+                                    <i class="fas fa-calendar-alt text-2xl text-darkGray"></i>
+                                    <p class="font-medium text-[10px] text-center">الفعاليات</p>
+                              </a>
+                              <a aria-current="page"
+                                    class="flex flex-col cursor-pointer justify-center items-center w-1/5 py-3 px-3"
+                                    href="/admin/settings">
+
+                                    <i class="fas fa-cog text-2xl text-darkGray"></i>
+                                    <p class="font-medium text-[10px] text-center">الإعدادات</p>
+
+                              </a>
+
+                              <a aria-current="page"
+                                    class="flex flex-col cursor-pointer justify-center items-center w-1/5 py-3 px-3"
+                                    href="/logout">
+
+                                    <i class="fas fa-sign-out-alt text-2xl text-darkGray"></i>
+                                    <p class="font-medium text-[10px] text-center">خروج</p>
+                              </a>
+                        </div>
+
+                  </div>
+            </div>
+      </div>
+</body>
+
+</html>

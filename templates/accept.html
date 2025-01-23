@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>دعوة حدث</title>
+      <script src="https://cdn.tailwindcss.com"></script>
+      <style>
+            body {
+                  font-family: 'Cairo', sans-serif;
+            }
+
+            /* Add subtle animations */
+
+            .fade-in {
+                  animation: fadeIn 1s ease-out;
+            }
+
+            @keyframes fadeIn {
+                  from {
+                        opacity: 0;
+                        transform: translateY(10px);
+                  }
+
+                  to {
+                        opacity: 1;
+                        transform: translateY(0);
+                  }
+            }
+      </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+      <!-- Container -->
+      <div class="min-h-screen flex flex-col items-center justify-center p-6">
+            <!-- Event Card -->
+            <div
+                  class="bg-white shadow-xl rounded-lg w-full max-w-lg p-8 space-y-8 fade-in transform transition duration-500 ">
+
+                  <!-- Cover Image -->
+                  <div class="rounded-lg overflow-hidden">
+                        <img src="{{ url_for('static', filename='uploads/'+event.image) }}" alt="صورة الغلاف"
+                              class="w-full h-48 object-cover">
+                  </div>
+
+                  <!-- Logo -->
+                  <div class="text-center mt-4">
+                        <img src="{{ url_for('static', filename='logo.png') }}" alt="شعار الحدث" class="w-24 mx-auto">
+                  </div>
+
+                  <!-- Title -->
+                  <h1 class="text-3xl font-bold text-purple-700 text-center">{{ event.title }}</h1>
+
+                  <!-- QR Code -->
+                  <div class="text-center">
+                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data={{ invitation.qrcode }}"
+                              alt="QR Code" class="w-36 mx-auto border-4 border-purple-500 p-2 rounded-lg">
+                  </div>
+
+                  <!-- Description -->
+                  <p class="text-center text-gray-600 text-lg leading-relaxed">
+                        {{ event.description }}
+                  </p>
+
+                  <!-- Location & Date -->
+                  <div class="text-center space-y-2 text-gray-700">
+                        <p><strong>📍 الموقع:</strong> {{ event.location }}</p>
+                        <p><strong>🗓️ التاريخ:</strong> {{ event.date }}</p>
+                  </div>
+
+                  <!-- Thank You Message -->
+                  <div class="text-center mt-8">
+                        <p class="text-purple-600 font-semibold text-xl">شكرًا لقبول الدعوة! 🎉</p>
+                        <p class="text-gray-500">نتطلع إلى مشاركتك في الحدث.</p>
+                  </div>
+            </div>
+      </div>
+</body>
+
+</html>
