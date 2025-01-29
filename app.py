@@ -31,6 +31,8 @@ from twilio.twiml.messaging_response import MessagingResponse
 # import lib for genrating qrcode
 import segno
 from time import sleep
+import mimetypes
+from werkzeug.utils import secure_filename
 
 # Initialize Flask app
 app = Flask(__name__)
@@ -39,7 +41,7 @@ app.secret_key = 'mazeem@2090'
 app.config.update(
     SQLALCHEMY_DATABASE_URI='sqlite:///mazeem.db',
     SQLALCHEMY_TRACK_MODIFICATIONS=False,
-    UPLOAD_FOLDER='static/uploads',
+    UPLOAD_FOLDER=os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static/uploads'),
     ALLOWED_EXTENSIONS={'png', 'jpg', 'jpeg', 'gif'},
     MAX_CONTENT_LENGTH=16 * 1024 * 1024,
     JWT_SECRET='mazeem@2090',
@@ -53,6 +55,8 @@ app.config.update(
 # make session saved 90 days
 app.permanent_session_lifetime = datetime.timedelta(days=90)
 
+# Ensure upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Setup Swagger UI
 SWAGGER_URL = '/swagger'
@@ -825,6 +829,99 @@ def admin_subscriptions():
 app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(api_bp, url_prefix='/api')
 app.register_blueprint(admin_bp, url_prefix='/admin')
+
+
+# Add these routes for serving invitation media
+@app.route('/invitation-media/<filename>')
+def invitation_media(filename):
+    """Serve invitation media files with proper content type"""
+    try:
+        # Ensure the filename is secure and has valid extension
+        filename = secure_filename(filename)
+        if not filename:  # secure_filename returns empty string for invalid filenames
+            app.logger.error("Invalid filename")
+            return jsonify({'error': 'Invalid filename'}), 400
+            
+        extension = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+        if not extension or extension not in app.config['ALLOWED_EXTENSIONS']:
+            app.logger.error(f"Invalid file extension: {extension}")
+            return jsonify({'error': 'Invalid file type'}), 400
+        
+        # Get the full path to the file
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Try to serve the requested file first
+        if os.path.exists(file_path) and os.path.isfile(file_path):
+            mime_type, _ = mimetypes.guess_type(file_path)
+            response = send_file(
+                file_path,
+                mimetype=mime_type or 'application/octet-stream',
+                as_attachment=False,
+                download_name=filename
+            )
+            response.headers['X-Content-Type-Options'] = 'nosniff'
+            return response
+            
+        # If requested file doesn't exist, try default images
+        default_images = [
+            f'default_invitation.{extension}',  # First try matching extension
+            'default_invitation.jpg',
+            'default_invitation.png',
+            'default_invitation.jpeg',
+            'default_invitation.gif'
+        ]
+        
+        for default_image in default_images:
+            default_path = os.path.join(app.config['UPLOAD_FOLDER'], default_image)
+            if os.path.exists(default_path) and os.path.isfile(default_path):
+                mime_type, _ = mimetypes.guess_type(default_path)
+                response = send_file(
+                    default_path,
+                    mimetype=mime_type or 'application/octet-stream',
+                    as_attachment=False,
+                    download_name=default_image
+                )
+                response.headers['X-Content-Type-Options'] = 'nosniff'
+                return response
+        
+        app.logger.error("No suitable default image found")
+        return jsonify({'error': 'Media not found'}), 404
+        
+    except Exception as e:
+        app.logger.error(f"Error serving invitation media: {str(e)}")
+        return jsonify({'error': 'Media not found'}), 404
+
+@app.route('/default-invitation')
+def default_invitation():
+    """Serve the default invitation image"""
+    try:
+        default_images = [
+            'default_invitation.jpg',
+            'default_invitation.png',
+            'default_invitation.jpeg',
+            'default_invitation.gif'
+        ]
+        
+        for default_image in default_images:
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], default_image)
+            if os.path.exists(file_path) and os.path.isfile(file_path):
+                mime_type, _ = mimetypes.guess_type(file_path)
+                response = send_file(
+                    file_path,
+                    mimetype=mime_type or 'application/octet-stream',
+                    as_attachment=False,
+                    download_name=default_image
+                )
+                response.headers['X-Content-Type-Options'] = 'nosniff'
+                return response
+        
+        app.logger.error("No default invitation image found")
+        return jsonify({'error': 'Default image not found'}), 404
+        
+    except Exception as e:
+        app.logger.error(f"Error serving default invitation: {str(e)}")
+        return jsonify({'error': 'Default image not found'}), 404
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
