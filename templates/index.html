@@ -1,0 +1,60 @@
+{% extends "admin/base.html" %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="text-center mb-12">
+        <h1 class="text-4xl font-bold text-purple-800 mb-4">مرحباً بك في معزم</h1>
+        <p class="text-xl text-gray-600">نظام إدارة الدعوات والمناسبات عبر الواتساب</p>
+    </div>
+
+    <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+        <!-- Features Section -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">المميزات</h2>
+            <ul class="space-y-3">
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    إرسال دعوات عبر الواتساب
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    إنشاء رموز QR للدعوات
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    تتبع حالة الدعوات
+                </li>
+                <li class="flex items-center text-gray-700">
+                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                    إدارة المناسبات والفعاليات
+                </li>
+            </ul>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-4">روابط سريعة</h2>
+            <div class="space-y-4">
+                <a href="{{ url_for('admin.admin_login') }}" 
+                   class="block w-full text-center bg-purple-600 text-white py-2 px-4 rounded-md hover:bg-purple-700 transition duration-300">
+                    تسجيل الدخول للوحة التحكم
+                </a>
+                <a href="{{ url_for('admin.admin_dashboard') }}" 
+                   class="block w-full text-center bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 transition duration-300">
+                    لوحة التحكم
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Contact Section -->
+    <div class="mt-12 text-center">
+        <p class="text-gray-600">
+            للمساعدة والدعم الفني، يرجى التواصل معنا عبر البريد الإلكتروني:
+            <a href="mailto:support@mazeem.com" class="text-purple-600 hover:text-purple-800">
+                support@mazeem.com
+            </a>
+        </p>
+    </div>
+</div>
+{% endblock %} 

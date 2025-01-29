@@ -1,0 +1,138 @@
+{% extends "admin/base.html" %} {% block content %}
+
+
+
+<div class="bg-[#F6F8FC] flex-grow ">
+    <div class="p-5 home-screen ">
+        <div></div>
+        <div class="">
+            <div class="mb-5">
+                <div>
+                    <div class="py-2 px-3 gap-3 rounded-full bg-buttonBlue flex justify-center items-center  w-fit">
+                        <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                                                <circle cx="20" cy="20" r="20" fill="#F4CB3C"></circle>
+                                          </svg></div>
+                        <h1 class="text-white font-medium text-lg">آخر الإحصائيات</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="  flex  justify-center items-center flex-col md:flex-row w-full gap-4 rounded-md mb-10">
+                <div class="flex md:justify-between justify-center items-center gap-3 bg-white box-shadow md:w-1/4 w-full h-24 px-5 ">
+                    <div class="bg-[#EDFDF7] p-1">
+                        <i class="fa-solid fa-calendar-days text-[#18B477]"></i>
+                    </div>
+                    <h1 class="text-xl md:flex-grow-0 flex-grow">عدد الاحداث</h1>
+                    <h1 class="text-2xl font-bold">{{ event_count }}</h1>
+                </div>
+                <div class="flex justify-between items-center gap-3 bg-white box-shadow md:w-1/4 w-full h-24 px-5 ">
+                    <div class="bg-[#EFF5FD] p-1">
+                        <i class="fa-solid fa-user text-[#F1C33a]"></i>
+                    </div>
+                    <h1 class="text-xl md:flex-grow-0 flex-grow">عدد المستخدمين</h1>
+                    <h1 class="text-2xl font-bold">{{ user_count }}</h1>
+                </div>
+                <div class="flex justify-between items-center gap-3 bg-white box-shadow md:w-1/4 w-full h-24 px-5 ">
+                    <div class="bg-[#EFF5FD] p-1">
+                        <i class="fa-solid fa-qrcode text-[#a0ef2f]"></i>
+                    </div>
+                    <h1 class="text-xl md:flex-grow-0 flex-grow">إجمالي عدد الدعوات</h1>
+                    <h1 class="text-2xl font-bold">{{ invitation_count }}</h1>
+                </div>
+                <div class="flex justify-between items-center gap-3 bg-white box-shadow md:w-1/4 w-full h-24 px-5 ">
+                    <div class="bg-[#EFF5FD] p-1">
+
+                        <i class="fa-solid fa-dollar-sign text-[#F4CB3C]"></i>
+                    </div>
+                    <h1 class="text-xl md:flex-grow-0 flex-grow">إجمالي عدد الاشتراكات</h1>
+                    <h1 class="text-2xl font-bold">{{ subscription_count }}</h1>
+                </div>
+            </div>
+        </div>
+        <div class="mb-5">
+            <div>
+                <div class="py-2 px-3 gap-3 rounded-full bg-buttonBlue flex justify-center items-center  w-fit">
+                    <div><svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+                                          <circle cx="20" cy="20" r="20" fill="#F4CB3C"></circle>
+                                    </svg></div>
+                    <h1 class="text-white font-medium text-lg">آخر الحسابات</h1>
+                </div>
+            </div>
+        </div>
+        <div class="md:w-1/3 w-full"><input placeholder="بحث ....." class="back-icon w-full border focus:border-gray border-lightGray rounded-2xl text-base py-1 px-5 outline-none " type="text" value=""></div>
+        <div class="  overflow-x-auto box-shadow mt-5">
+            <table class="  w-full flex-grow  h-fit ">
+                <thead class="bg-lightGray text-tableHead">
+
+                    <th class="text-tableHead font-normal text-x-[16px]">
+                        <h2>المستخدم</h2>
+                    </th>
+                    <th class="text-tableHead font-normal text-x-[16px] text-right  min-w-32">
+                        الخطه
+                    </th>
+                    <th class="text-tableHead font-normal text-x-[16px] text-right min-w-32">عدد الرسائل المتبقيه
+                    </th>
+                    <th class="text-tableHead font-normal text-x-[16px] text-right min-w-32 ">عدد الرسائل المرسله
+                    </th>
+                    <th class="text-tableHead font-normal text-x-[16px] text-right min-w-32">تحكم
+                    </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in last_25_users %}
+                    <tr class="pl-3">
+                        <td class="min-w-60">
+                            <div class="flex justify-start items-center gap-4">
+                                <div class="w-11 rounded-full overflow-hidden">
+                                    <!-- if the first 6 letter in the user.image = https he pass it else he print ok -->
+                                    {% if user.image[:5] == 'https' %}
+                                    <img src="{{ user.image }}" alt="user image" class="w-full h-full object-cover"> {% else %}
+                                    <img src="{{ url_for('static', filename='uploads/' + user.image) }}" alt="user image" class="w-full h-full object-cover"> {% endif %}
+                                </div>
+                                <div class="text-right">
+                                    <h1 class="font-medium  text-sm text-darkGray ">{{ user.name }}
+                                    </h1>
+                                    <p class="text-lightText text-[12px]">{{ user.email }}
+                                    </p>
+                                </div>
+                            </div>
+                        </td>
+                        <td class=" ">
+                            <p class="text-xs  text-white  font-normal m w-fit py-1 px-3 rounded-full bg-[#F400ff]">
+                                {{ user.plan }}
+                            </p>
+                        </td>
+                        <td>
+                            {{ user.send_message }}
+                        </td>
+                        <td>
+                            <p class="text-xs text-lightText font-normal m-auto">{{ user.remaining_message }}
+                            </p>
+
+                        </td>
+                        <td>
+                            <div class="flex justify-start items-center gap-2">
+                                <a href="/admin/user/{{ user.id }}" class="text-xs text-white font-normal py-1 px-3 rounded-full bg-[#00eeff]">عرض</a>
+                            </div>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot class="text-center">
+                    <tr>
+                        <td colspan="5">
+                            <div class="w-full flex justify-start items-start overflow-auto">
+                                <div class="flex gap-2 items-center"><button disabled="" class="align-middle select-none text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none rounded-lg text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20 flex items-center gap-2 bg-gray py-2 px-3 font-noto font-normal text-sm"
+                                        type="button">السابق</button>
+                                    <div class="bg-darkGray text-white cursor-pointer flex justify-center items-center w-10 h-10 rounded-full">
+                                        1</div><button disabled="" class="align-middle select-none text-center uppercase transition-all disabled:opacity-50 disabled:shadow-none disabled:pointer-events-none rounded-lg text-gray-900 hover:bg-gray-900/10 active:bg-gray-900/20 flex items-center gap-2 bg-gray py-2 px-3 font-noto font-normal text-sm"
+                                        type="button">التالي</button>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
